@@ -1,0 +1,48 @@
+/* Query1 - query used for first insight */
+
+SELECT G.Name , max(T.Bytes) as Max_Bytes
+FROM Genre as G
+JOIN Track as T
+On G.GenreId=T.GenreId
+GROUP by  G.Name
+ORDER by Max_Bytes
+
+
+/* Query2 - query used for second insight */
+
+SELECT IL.UnitPrice , sum(IL.Quantity) as Num_of_tracks , C.Country
+FROM Customer as C
+Join Invoice as I
+On C.CustomerId=I.CustomerId
+JOIN InvoiceLine as IL
+On I.InvoiceId=IL.InvoiceId
+WHERE UnitPrice>0.99
+GROUP by C.Country 
+ORDER by Num_of_tracks
+
+
+/* Query3 - query used for third insight */
+
+SELECT I.BillingCountry , G.Name , count(G.Name) as Num , I.Total
+FROM Invoice  as I
+Join InvoiceLine  as IL
+On I.InvoiceId=IL.InvoiceId
+JOIN Track as T
+On IL.TrackId=T.TrackId
+JOIN Genre as G
+On T.GenreId=G.GenreId
+WHERE G.Name = (SELECT min(Name) FROM Genre)
+GROUP by I.BillingCountry
+ORDER by G.Name , I.Total, Num
+
+/* Query4 - query used for fourth insight */
+
+SELECT A.Title , T.Milliseconds , Art.Name
+FROM Album as A
+JOIN Track as T
+On A.AlbumId=T.AlbumId
+JOIN Artist as Art
+On A.ArtistId=Art.ArtistId
+WHERE T.Milliseconds > (SELECT avg(Milliseconds) from Track)
+GROUP by A.Title 
+ORDER by T.Milliseconds  DESC
